@@ -18,8 +18,9 @@ public:
                                          double time);
   vector<double> GBM(double initial_value, double mu, double sigma, int steps,
                      double time);
-  vector<vector<double>> GBM(int num_simulations, double initial_value,
-                             double mu, double sigma, int steps, double time);
+  // vector<vector<double>> GBM(int num_simulations, double initial_value,
+  //                            double mu, double sigma, int steps, double
+  //                            time);
 };
 
 #endif // STOCHASTIC_HEADER_H

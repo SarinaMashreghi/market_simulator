@@ -77,12 +77,13 @@ vector<vector<double>> stochastic::brownian_motion(int num_simulations,
   return result;
 }
 
+/*
 vector<double> stochastic::GBM(double initial_value, double mu, double sigma,
                                int steps, double time) {
   /* returns a sinlge sample series of Geometric Brownian Motion (GBM)
    * mu = drift factor
    * sigma = volatility
-   */
+   
   vector<double> bm = brownian_motion(steps, time); // a sample Brownian motion
 
   vector<double> result(steps);
@@ -96,11 +97,32 @@ vector<double> stochastic::GBM(double initial_value, double mu, double sigma,
 
   return result;
 }
+*/
 
+vector<double> stochastic::GBM(double initial_value, double mu, double sigma,
+                               int steps, double time) {
+  double dt = time / steps;
+
+  random_device rd{};
+  mt19937 gen{rd()};
+
+  normal_distribution<double> d(0, sqrt(dt));
+  auto random_val = [&d, &gen] { return d(gen); };
+
+  vector<double> res(steps, initial_value);
+
+    for (int j = 1; j < steps; j++) {
+      res[j] = res[j - 1] *
+                  exp((mu - pow(sigma, 2) / 2) * dt + sigma * random_val());
+    }
+
+  return res;
+}
+
+/*
 vector<vector<double>> stochastic::GBM(int num_simulations,
                                        double initial_value, double mu,
                                        double sigma, int steps, double time) {
-  /* returns multiple sample paths of GBM in a 2D vector */
 
   vector<vector<double>> result(num_simulations);
 
@@ -110,3 +132,4 @@ vector<vector<double>> stochastic::GBM(int num_simulations,
 
   return result;
 }
+*/

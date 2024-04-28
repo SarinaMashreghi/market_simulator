@@ -13,10 +13,12 @@ add_executable(market_simulator
 	src/stochastic.cpp
 	src/exchange.cpp
 	src/client.cpp
+	src/option_pricer.cpp
 
 	# header files
 	include/tools.h 
 	include/stochastic.h
 	include/exchange.h 
 	include/client.h
+	include/option_pricer.h
 )
