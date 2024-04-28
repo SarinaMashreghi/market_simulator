@@ -1,0 +1,3 @@
+/mnt/c/Users/sarin/Documents/GitHub/market_simulator/CPP/build/CMakeFiles/market_simulator.dir
+/mnt/c/Users/sarin/Documents/GitHub/market_simulator/CPP/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/sarin/Documents/GitHub/market_simulator/CPP/build/CMakeFiles/rebuild_cache.dir
