@@ -1,5 +1,12 @@
-#include <arpa/inet.h>
-#include <bits/stdc++.h>
-#include <sys/socket.h>
+#include "include/stochastic.h"
 
-int main() { return 0; }
+int main() {
+  stochastic s = stochastic();
+
+  vector<vector<double>> bm = s.GBM(2, 10, 0.1, 0.1, 10, 1);
+
+  for (auto v : bm) {
+    for (auto val : v)
+      cout << val << endl;
+  }
+}
