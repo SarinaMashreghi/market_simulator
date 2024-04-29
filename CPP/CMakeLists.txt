@@ -22,3 +22,6 @@ add_executable(market_simulator
 	include/client.h
 	include/option_pricer.h
 )
+
+find_package(OpenMP)
+target_link_libraries(market_simulator PUBLIC OpenMP::OpenMP_CXX)

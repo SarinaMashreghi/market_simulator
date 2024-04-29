@@ -27,7 +27,9 @@ double tools::log_return_volatility(vector<double> &values, double dt) {
 
   vector<double> log_return(values.size() - 1);
   for (int i = 0; i < log_return.size(); i++)
-    log_return[i] = log(values[i + 1] / values[i]);
+    log_return[i] =
+        log(values[i + 1] /
+            values[i]); // calculate the logarithm of the return at each step
   double mean_return = mean(log_return);
   double sample_var = variance(log_return);
   double estimated_vol = sqrt(sample_var / dt);
