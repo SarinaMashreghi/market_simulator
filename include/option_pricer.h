@@ -22,6 +22,8 @@ public:
 
   vector<double> CRR(double sigma, double dt, double disc);
   vector<double> JR(double sigma, double dt, double interest);
+  double black_scholes_merton(double S, double K, double T, double r, double q,
+                              double v, char opt_type);
 
 private:
   stochastic m_stochastic_gen; // to generate stochastic processes

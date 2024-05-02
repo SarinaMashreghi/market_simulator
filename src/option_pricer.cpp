@@ -1,4 +1,5 @@
 #include "../include/option_pricer.h"
+#include <algorithm>
 #include <stdexcept>
 
 double option_pricer::european_payoff(double price, double strike,
@@ -156,4 +157,64 @@ vector<double> option_pricer::JR(double sigma, double dt, double interest) {
   double down_factor = exp(nu * dt - sigma * sqrt(dt));
 
   return {up_factor, down_factor, p_risk_neutral, q_risk_neutral};
+}
+
+// helper functions used in the Black-Scholes-Merton model
+// source:
+// (https://sites.google.com/view/vinegarhill-financelabs/black-scholes-merton)
+
+// N(0,1) density
+
+double f(double x) {
+
+  double pi = 4.0 * atan(1.0);
+
+  return exp(-x * x * 0.5) / sqrt(2 * pi);
+}
+
+double Boole(double StartPoint, double EndPoint, int n) {
+
+  vector<double> X(n + 1, 0.0);
+  vector<double> Y(n + 1, 0.0);
+
+  double delta_x = (EndPoint - StartPoint) / double(n);
+
+#pragma omp parallel for
+  for (int i = 0; i <= n; i++) {
+    X[i] = StartPoint + i * delta_x;
+  }
+
+  transform(X.begin(), X.end(), Y.begin(), f);
+
+  double sum = 0;
+
+  for (int t = 0; t <= (n - 1) / 4; t++) {
+
+    int ind = 4 * t;
+
+    sum += (1 / 45.0) *
+           (14 * Y[ind] + 64 * Y[ind + 1] + 24 * Y[ind + 2] +
+
+            64 * Y[ind + 3] + 14 * Y[ind + 4]) *
+           delta_x;
+  }
+
+  return sum;
+}
+
+// N(0,1) cdf by Boole's Rule
+
+double N(double x) { return Boole(-10.0, x, 240); }
+
+double option_pricer::black_scholes_merton(double S, double K, double T,
+                                           double r, double q, double v,
+                                           char opt_type) {
+
+  double d = (log(S / K) + T * (r - q + 0.5 * v * v)) / (v * sqrt(T));
+  double call = S * exp(-q * T) * N(d) - exp(-r * T) * K * N(d - v * sqrt(T));
+
+  if (opt_type == 'C')
+    return call;
+
+  return call - S * exp(-q * T) + K * exp(-r * T);
 }
