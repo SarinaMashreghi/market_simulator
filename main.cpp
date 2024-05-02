@@ -1,6 +1,7 @@
 #include "include/exchange.h"
 #include "include/option_pricer.h"
 #include "include/stochastic.h"
+#include <chrono>
 
 int main() {
   /*
@@ -12,7 +13,12 @@ for (auto v : bm) {
 for (auto val : v)
 cout << val << endl;
 } */
-  Exchange exc(0.3, 0.1, 0.06);
+  Exchange exc(100, 0.1, 0.1, 0.06, 1);
+  exc.update_price();
+  while (true) {
+    cout << exc.get_price() << endl;
+    this_thread::sleep_for(chrono::seconds(1));
+  }
   vector<double> tmp = exc.get_data(1, 100);
   for (auto n : tmp)
     cout << n << endl;
