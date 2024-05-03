@@ -14,6 +14,7 @@ add_executable(market_simulator
 	src/exchange.cpp
 	src/client.cpp
 	src/option_pricer.cpp
+	src/simulations.cpp
 
 	# header files
 	include/tools.h 
@@ -21,6 +22,7 @@ add_executable(market_simulator
 	include/exchange.h 
 	include/client.h
 	include/option_pricer.h
+	include/simulations.h
 )
 
 find_package(OpenMP)

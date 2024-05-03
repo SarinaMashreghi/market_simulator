@@ -12,6 +12,7 @@ Exchange::Exchange(double initial_price, double drift, double volatility,
   this->m_volatility = volatility;
   this->m_interest_rate = interest;
   this->m_dt = dt;
+  this->is_running = false;
 }
 
 void Exchange::update_price() {
@@ -21,8 +22,7 @@ void Exchange::update_price() {
     normal_distribution<double> d(0, sqrt(m_dt));
     auto random_val = [&d, &gen] { return d(gen); };
 
-    while (true) {
-      lock_guard<mutex> guard(mtx);
+    while (this->is_running) {
       current_price =
           current_price * exp((m_drift - pow(m_volatility, 2) / 2) * m_dt +
                               m_volatility * random_val());
@@ -31,8 +31,14 @@ void Exchange::update_price() {
   }).detach();
 }
 
-double Exchange::get_price() {
-  // lock_guard<mutex> guard(mtx);
+double Exchange::get_price() const { return current_price.load(); }
 
-  return current_price;
+void Exchange::start() {
+  this->is_running = true;
+  exchange_thread = thread(&Exchange::update_price, this);
+}
+
+void Exchange::stop() {
+  this->is_running = false;
+  exchange_thread.join();
 }

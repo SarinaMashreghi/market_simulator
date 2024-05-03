@@ -11,12 +11,14 @@
 
 class Exchange {
 public:
-  Exchange(){};
   Exchange(double initial_price, double drift, double volatility,
            double interest, double dt);
 
   void update_price();
-  double get_price();
+  double get_price() const;
+
+  void start();
+  void stop();
 
 private:
   stochastic m_stochastic_gen;
@@ -27,7 +29,8 @@ private:
   double m_interest_rate;
   double m_dt;
   atomic<double> current_price;
-  mutex mtx;
+  atomic<bool> is_running;
+  thread exchange_thread;
 };
 
 #endif // EXCHANGE_HEADER_H

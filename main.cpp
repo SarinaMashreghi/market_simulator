@@ -1,5 +1,6 @@
 #include "include/exchange.h"
 #include "include/option_pricer.h"
+#include "include/simulations.h"
 #include "include/stochastic.h"
 #include <chrono>
 
@@ -13,15 +14,18 @@ for (auto v : bm) {
 for (auto val : v)
 cout << val << endl;
 } */
+  simulation sim = simulation();
+  sim.market_simulation();
+  /*
   Exchange exc(100, 0.1, 0.1, 0.06, 1);
   exc.update_price();
   while (true) {
     cout << exc.get_price() << endl;
     this_thread::sleep_for(chrono::seconds(1));
-  }
-  vector<double> tmp = exc.get_data(1, 100);
-  for (auto n : tmp)
-    cout << n << endl;
+  } */
+  // vector<double> tmp = exc.get_data(1, 100);
+  // for (auto n : tmp)
+  //  cout << n << endl;
   option_pricer pricer = option_pricer();
   double bsm = pricer.black_scholes_merton(100, 100, 1, 0.06, 0, 0.3, 'C');
   cout << "bsm " << bsm << endl;
