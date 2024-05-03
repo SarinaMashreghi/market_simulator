@@ -93,8 +93,6 @@ double option_pricer::binomial_model_european(double strike_price,
 
   double up_factor = variables[0], down_factor = variables[1],
          p_risk_neutral = variables[2], q_risk_neutral = variables[3];
-  cout << "u " << up_factor << " d " << down_factor << endl;
-  cout << "p " << p_risk_neutral << " q " << q_risk_neutral << endl;
   // prices at maturity time
   vector<double> price(periods + 1);
 
@@ -128,7 +126,6 @@ double option_pricer::binomial_model_european(double strike_price,
     }
     toggle = !toggle;
   }
-  cout << "1 " << option_value1[0] << " 2 " << option_value2[0] << endl;
   if (toggle)
     return option_value1[0];
   return option_value2[0];

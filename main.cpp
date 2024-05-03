@@ -15,7 +15,7 @@ for (auto val : v)
 cout << val << endl;
 } */
   simulation sim = simulation();
-  sim.market_simulation();
+  sim.option_price_calculator();
   /*
   Exchange exc(100, 0.1, 0.1, 0.06, 1);
   exc.update_price();

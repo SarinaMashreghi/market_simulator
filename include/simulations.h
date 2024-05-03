@@ -3,12 +3,13 @@
 
 #include "client.h"
 #include "exchange.h"
+#include "option_pricer.h"
 #include <bits/stdc++.h>
 
 class simulation {
 public:
-  simulation();
-  void market_simulation();
+  void market_simulation(int duration);
+  void option_price_calculator();
 };
 
 #endif // SIMULATIONS_HEADER_H
