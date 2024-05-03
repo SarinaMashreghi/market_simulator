@@ -13,7 +13,7 @@ public:
   double monte_carlo_european(int num_simulations, double strike_price,
                               double initial_price, double mu, double sigma,
                               int time_steps, double maturity_time,
-                              char option_type, double discount_factor);
+                              char option_type, double risk_free_interest);
 
   double binomial_model_european(double strike_price, double initial_price,
                                  double interest, double sigma, int periods,

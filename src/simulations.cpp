@@ -1,22 +1,49 @@
 #include "../include/simulations.h"
 #include <ostream>
 
-void simulation::market_simulation(int duration) {
-  Exchange exchange(100, 0.1, 0.1, 0.06, 0.1);
-  Client client(exchange, 1000);
+void simulation::market_simulation() {
+  tools tool;
+  int duration;
+  cout << "Simulation duration (seconds): ";
+  cin >> duration;
+  // set exchange parameters
+  double initial_price, drift, volatility, time_steps;
+  cout << "\nSet market parameters: \nStarting price ($): ";
+  cin >> initial_price;
+  cout << "Drift/risk-free interest rate (%) (this is the overall tendency of "
+          "the price to go up or down, and in a risk-neutral setting it is "
+          "equal to the risk-free interest rate): ";
+  cin >> drift;
+  cout << "Volatility (%): ";
+  cin >> volatility;
+  cout << "Time step length (seconds): ";
+  cin >> time_steps;
+
+  drift /= 100.0; // from percentage to (0,1) range
+  volatility /= 100.0;
+
+  Exchange exchange(initial_price, drift, volatility, time_steps);
+  Client client(exchange, int(time_steps * 1000));
 
   exchange.start();
   client.start_listening();
+  cout << "Simulating ... " << endl;
 
   this_thread::sleep_for(chrono::seconds(duration));
 
   client.stop_listening();
   exchange.stop();
 
-  vector<double> price = client.get_price_history();
+  vector<double> price_path = client.get_price_history();
+  // for (auto p : price_path)
+  //   cout << p << endl;
+  pair<double, double> log_return_factors =
+      tool.log_return_analysis(price_path, time_steps);
 
-  for (auto p : price)
-    cout << p << endl;
+  cout << "\nEstimated drift: " << setw(15) << setprecision(3)
+       << log_return_factors.first * 100 << "%" << endl
+       << "Estimated volatility: " << setw(10) << setprecision(3)
+       << log_return_factors.second * 100 << "%" << endl;
 }
 
 void simulation::option_price_calculator() {
@@ -27,9 +54,9 @@ void simulation::option_price_calculator() {
   double expiry_time;
   char option_type;
 
-  cout << "Initial price: ";
+  cout << "\nInisetprecision(3) tial price ($): ";
   cin >> initial_price;
-  cout << "Strike price: ";
+  cout << "Strike price ($): ";
   cin >> strike_price;
   cout << "Time to maturity (years): ";
   cin >> expiry_time;
@@ -48,7 +75,7 @@ void simulation::option_price_calculator() {
   int num_steps_mc;
   int num_simulations;
 
-  cout << "Number of time steps in the binomial model: ";
+  cout << "\nNumber of time steps in the binomial model: ";
   cin >> num_steps_bin;
   cout << "Number of time steps in the Monte Carlo model: ";
   cin >> num_steps_mc;
@@ -70,11 +97,17 @@ void simulation::option_price_calculator() {
 
   double mc = pricer.monte_carlo_european(
       num_simulations, strike_price, initial_price, risk_free_interest,
-      volatility, num_steps_mc, expiry_time, option_type,
-      1 / (1 + risk_free_interest));
+      volatility, num_steps_mc, expiry_time, option_type, risk_free_interest);
 
-  cout << "\nBlack-Scholes-Merton Model: " << bsm << endl
-       << "Binomial Model (CRR method): " << binomial_crr << endl
-       << "Binomial Model (JR method): " << binomial_jr << endl
-       << "Monte Carlo Model: " << mc << endl;
+  cout << "\n---------------------------------------\n"
+       << "Black-Scholes-Merton Model: " << setw(11) << setprecision(3) << bsm
+       << "$" << endl
+       << "Binomial Model (CRR method): " << setw(10) << setprecision(3)
+       << binomial_crr << "$" << endl
+       << "Binomial Model (JR method): " << setw(11) << setprecision(3)
+       << binomial_jr << "$" << endl
+       << "Monte Carlo Model: " << setw(20) << setprecision(3) << mc << "$"
+       << endl
+       << "---------------------------------------\n"
+       << endl;
 }

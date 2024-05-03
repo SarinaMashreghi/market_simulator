@@ -7,11 +7,11 @@ double option_pricer::european_payoff(double price, double strike,
   /* returns the value of the European option at maturity time based on option
    * type, strike price and stock price */
 
-  if (option_type == 'C')
+  if (option_type == 'C' || option_type == 'c')
     return max(
         price - strike,
         0.0); // call option: maximum of 0 and current price - strike price
-  if (option_type == 'P')
+  if (option_type == 'P' || option_type == 'p')
     return max(
         strike - price,
         0.0); // put option: maximum of 0 and strike price - current price
@@ -22,7 +22,7 @@ double option_pricer::european_payoff(double price, double strike,
 double option_pricer::monte_carlo_european(
     int num_simulations, double strike_price, double initial_price, double mu,
     double sigma, int time_steps, double maturity_time, char option_type,
-    double discount_factor) {
+    double risk_free_interest) {
 
   /* Using Monte Carlo simulations for risk-neutral pricing by generating a
    * large number of GBM paths and evaluating the payoff for each. Accroding to
@@ -34,6 +34,8 @@ double option_pricer::monte_carlo_european(
    * asynchronously.
    * */
 
+  double dt = maturity_time / time_steps;
+  double discount_factor = exp(-risk_free_interest * dt);
   // std::async runs tasks asynchronously and returns a std::future object that
   // eventually holds the result
   vector<future<vector<double>>> futures;
@@ -210,8 +212,11 @@ double option_pricer::black_scholes_merton(double S, double K, double T,
   double d = (log(S / K) + T * (r - q + 0.5 * v * v)) / (v * sqrt(T));
   double call = S * exp(-q * T) * N(d) - exp(-r * T) * K * N(d - v * sqrt(T));
 
-  if (opt_type == 'C')
+  if (opt_type == 'C' || opt_type == 'c')
     return call;
 
-  return call - S * exp(-q * T) + K * exp(-r * T);
+  if (opt_type == 'P' || opt_type == 'p')
+    return call - S * exp(-q * T) + K * exp(-r * T);
+
+  throw invalid_argument("Invalid option type.");
 }

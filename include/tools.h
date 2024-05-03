@@ -9,7 +9,7 @@ class tools {
 public:
   double mean(vector<double> &values);
   double variance(vector<double> &values);
-  double log_return_volatility(vector<double> &values, double dt);
+  pair<double, double> log_return_analysis(vector<double> &values, double dt);
 
   // void export_csv(unordered_map<string, vector<double>> &values);
 };

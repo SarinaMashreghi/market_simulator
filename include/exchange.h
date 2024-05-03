@@ -11,8 +11,7 @@
 
 class Exchange {
 public:
-  Exchange(double initial_price, double drift, double volatility,
-           double interest, double dt);
+  Exchange(double initial_price, double drift, double volatility, double dt);
 
   void update_price();
   double get_price() const;
@@ -26,7 +25,6 @@ private:
 
   double m_drift;
   double m_volatility;
-  double m_interest_rate;
   double m_dt;
   atomic<double> current_price;
   atomic<bool> is_running;

@@ -8,7 +8,7 @@
 
 class simulation {
 public:
-  void market_simulation(int duration);
+  void market_simulation();
   void option_price_calculator();
 };
 

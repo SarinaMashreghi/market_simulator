@@ -22,8 +22,12 @@ double tools::variance(vector<double> &values) {
   return var / (values.size() - 1);
 }
 
-double tools::log_return_volatility(vector<double> &values, double dt) {
-  /* returns the volatility of the log return of a series of values */
+pair<double, double> tools::log_return_analysis(vector<double> &values,
+                                                double dt) {
+  /* returns the drift and the volatility of a GBM using the log return of the
+   * values */
+  if (values.size() < 2)
+    return {0, 0};
 
   vector<double> log_return(values.size() - 1);
   for (int i = 0; i < log_return.size(); i++)
@@ -32,6 +36,8 @@ double tools::log_return_volatility(vector<double> &values, double dt) {
             values[i]); // calculate the logarithm of the return at each step
   double mean_return = mean(log_return);
   double sample_var = variance(log_return);
+
   double estimated_vol = sqrt(sample_var / dt);
-  return estimated_vol;
+  double estimated_drift = (mean_return + pow(estimated_vol, 2) / 2) / dt;
+  return {estimated_drift, estimated_vol};
 }
