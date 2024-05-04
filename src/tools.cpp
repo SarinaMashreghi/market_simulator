@@ -30,10 +30,11 @@ pair<double, double> tools::log_return_analysis(vector<double> &values,
     return {0, 0};
 
   vector<double> log_return(values.size() - 1);
-  for (int i = 0; i < log_return.size(); i++)
-    log_return[i] =
-        log(values[i + 1] /
-            values[i]); // calculate the logarithm of the return at each step
+  for (int i = 0; i < log_return.size(); i++) {
+    // calculate the logarithm of the return at each step
+    log_return[i] = log(values[i + 1] / values[i]);
+  }
+
   double mean_return = mean(log_return);
   double sample_var = variance(log_return);
 
