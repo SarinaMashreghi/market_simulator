@@ -2,6 +2,7 @@
 #include <ostream>
 
 void simulation::market_simulation() {
+  /* Market simulation */
   tools tool;
   int duration;
   cout << "Simulation duration (seconds): ";
@@ -43,6 +44,7 @@ void simulation::market_simulation() {
 }
 
 void simulation::option_price_calculator() {
+  /* Option price calculation */
   double initial_price;
   double strike_price;
   double risk_free_interest;

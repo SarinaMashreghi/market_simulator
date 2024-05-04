@@ -104,6 +104,8 @@ double option_pricer::binomial_model_european(double strike_price,
         initial_price * pow(down_factor, i) * pow(up_factor, periods - i);
   }
 
+  // enable parallel computation of the price using two vectors for storing
+  // price values
   vector<double> option_value1(periods + 1);
   vector<double> option_value2(periods + 1);
 
@@ -111,7 +113,9 @@ double option_pricer::binomial_model_european(double strike_price,
     option_value1[i] = european_payoff(price[i], strike_price, option_type);
   }
 
-  bool toggle = true;
+  bool toggle = true; // determines which vector stores the current period (for
+                      // read operations) and which stores the data for pervious
+                      // period (for write operations)
 
   for (int i = periods - 1; i >= 0; i--) {
 #pragma omp parallel for
@@ -126,7 +130,7 @@ double option_pricer::binomial_model_european(double strike_price,
                                q_risk_neutral * option_value2[j + 1]);
       }
     }
-    toggle = !toggle;
+    toggle = !toggle; // switch the other of the vectors
   }
   if (toggle)
     return option_value1[0];
@@ -136,7 +140,8 @@ double option_pricer::binomial_model_european(double strike_price,
 // methods for choosing parameters in binomial model
 
 vector<double> option_pricer::CRR(double sigma, double dt, double interest) {
-  // Cox, Ross and Rubinstein method
+  /* Cox, Ross and Rubinstein method for calculating the up and down factor and
+   * risk-neutral probabilities */
   double up_factor = exp(sigma * sqrt(dt));
   double down_factor = 1 / up_factor;
   double p_risk_neutral =
@@ -147,7 +152,8 @@ vector<double> option_pricer::CRR(double sigma, double dt, double interest) {
 }
 
 vector<double> option_pricer::JR(double sigma, double dt, double interest) {
-  // Jarrow and Rudd method
+  /* Jarrow and Rudd method for calculating the up and down factor and
+   * risk-neutral probabilities */
   double q_risk_neutral = 0.5;
   double p_risk_neutral = 0.5;
 
@@ -208,6 +214,7 @@ double N(double x) { return Boole(-10.0, x, 240); }
 double option_pricer::black_scholes_merton(double S, double K, double T,
                                            double r, double q, double v,
                                            char opt_type) {
+  /* Black-Scholes-Merton formula for option pricing*/
 
   double d = (log(S / K) + T * (r - q + 0.5 * v * v)) / (v * sqrt(T));
   double call = S * exp(-q * T) * N(d) - exp(-r * T) * K * N(d - v * sqrt(T));

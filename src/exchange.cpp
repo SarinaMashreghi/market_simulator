@@ -33,14 +33,19 @@ void Exchange::update_price() {
   }).detach();
 }
 
-double Exchange::get_price() const { return current_price.load(); }
+double Exchange::get_price() const {
+  /* returns current price of the market */
+  return current_price.load();
+}
 
 void Exchange::start() {
+  /* start generating data */
   this->is_running = true;
   exchange_thread = thread(&Exchange::update_price, this);
 }
 
 void Exchange::stop() {
+  /* stop generating data */
   this->is_running = false;
   exchange_thread.join();
 }

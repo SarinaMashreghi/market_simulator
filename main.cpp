@@ -7,6 +7,7 @@ int main(int argc, char **argv) {
 
   simulation sim = simulation();
 
+  // arguments determine the simulation to be performed
   if (strcmp(argv[1], "OPTION_CALCULATOR") == 0) {
     bool run = 1;
     while (run) {
